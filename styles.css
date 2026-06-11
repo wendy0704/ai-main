@@ -849,8 +849,9 @@ body {
   gap: 1.5rem;
   margin-top: 1rem;
   text-align: left;
+  align-items: start;
 }
-.ending-left, .ending-right { min-width: 0; }
+.ending-left, .ending-right { min-width: 0; align-self: start; }
 @media (max-width: 700px) {
   .ending-grid { grid-template-columns: 1fr; }
   #screen-ending .card { max-width: 100%; }
