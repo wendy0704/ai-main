@@ -88,7 +88,7 @@ async function runLoading(playerName) {
 
     gameState = {
       playerName,
-      apRemaining: 10,
+      apRemaining: 15,
       apUsed: 0,
       round: 1,
       npcPressure: {},
@@ -159,7 +159,7 @@ function updateApDisplay() {
   if (count) count.textContent = gameState.apRemaining;
   if (pipsEl) {
     pipsEl.innerHTML = "";
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 15; i++) {
       const pip = document.createElement("div");
       pip.className = `ap-pip${i >= gameState.apRemaining ? " used" : ""}`;
       pipsEl.appendChild(pip);
@@ -868,7 +868,7 @@ function bindUi() {
     if (!game) return;
     gameState = {
       playerName: gameState?.playerName || "",
-      apRemaining: 10,
+      apRemaining: 15,
       apUsed: 0,
       round: 1,
       npcPressure: {},

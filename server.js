@@ -205,7 +205,7 @@ JSON 格式：
 app.post("/api/action", async (req, res) => {
   const { script, gameState, action, conversationHistory } = req.body;
 
-  const stateCtx = `【當前狀態】回合 ${gameState.round}/4，剩餘 AP：${gameState.apRemaining}/10
+  const stateCtx = `【當前狀態】回合 ${gameState.round}/4，剩餘 AP：${gameState.apRemaining}/15
 NPC 壓力：${script.npcs.map((n) => `${n.name}=${gameState.npcPressure?.[n.id] ?? 0}/100`).join("，")}
 NPC 信任：${script.npcs.map((n) => `${n.name}=${gameState.npcTrust?.[n.id] ?? 100}/100`).join("，")}
 已發現線索：${gameState.cluesFound?.length ? gameState.cluesFound.map((c) => c.label).join("、") : "尚無"}
@@ -274,7 +274,7 @@ app.post("/api/accuse", async (req, res) => {
   const accused = script.npcs.find((n) => n.id === accusedId);
   const killerCorrect = accusedId === script.killerTruth.killerId;
 
-  const apScore = Math.round((gameState.apRemaining / 10) * 10);
+  const apScore = Math.round((gameState.apRemaining / 15) * 10);
   // 用 isKey 旗標計分（AI 回傳的 clueFound 不帶預設 id，無法比對 keyClueIds）
   const foundKeyClues = (gameState.cluesFound || []).filter((c) => c.isKey).length;
   const clueScore = Math.round((Math.min(foundKeyClues, 3) / 3) * 10);
