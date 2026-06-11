@@ -608,6 +608,7 @@ function showAccusationScreen() {
 
   const submitBtn = $("btn-submit-accuse");
   submitBtn.disabled = true;
+  submitBtn.textContent = "提出指控";
 
   function checkAccuseReady() {
     const motive = $("accuse-motive").value.trim();
