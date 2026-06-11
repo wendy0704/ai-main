@@ -24,7 +24,10 @@ cd ai-main
 npm install
 
 # 3. 建立 .env 檔案並填入 API 金鑰
+# macOS / Linux：
 echo "ANTHROPIC_API_KEY=你的金鑰" > .env
+# Windows：請用記事本直接建立 .env 檔，內容填入（不要用 echo 指令，會把引號一起寫入）：
+# ANTHROPIC_API_KEY=你的金鑰
 
 # 4. 啟動伺服器
 node server.js
