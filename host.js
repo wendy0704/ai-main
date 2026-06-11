@@ -563,7 +563,9 @@ function showAccusationScreen() {
   killerOpts.innerHTML = "";
   let selectedKillerId = null;
 
-  game.npcs.forEach((n) => {
+  // 打亂順序，避免兇手固定出現在第一個
+  const shuffledNpcs = [...game.npcs].sort(() => Math.random() - 0.5);
+  shuffledNpcs.forEach((n) => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "accuse-npc-btn";
