@@ -550,6 +550,7 @@ function bindFreeInput() {
     executeAction({ text, actionType: "free", target: null, apCost: 1 });
   }
 
+  // 已移除 Enter 自動送出，僅限點按鈕執行
   btn.addEventListener("click", submit);
 }
 
