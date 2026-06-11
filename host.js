@@ -306,12 +306,22 @@ function addClue(clue) {
   const typeTag = CLUE_TYPE_LABEL[clue.type] || clue.type || "線索";
   const item = document.createElement("div");
   item.className = "clue-item new-clue";
+  const detailId = `clue-detail-${Date.now()}-${Math.random().toString(36).slice(2)}`;
   item.innerHTML = `
     <span class="clue-type-tag ${escapeHtml(clue.type || "")}">${escapeHtml(typeTag)}</span>
     <div class="clue-text-wrap">
-      <div class="clue-label">${escapeHtml(clue.label)}${clue.isKey ? '<span class="clue-key-mark">★</span>' : ""}</div>
-      <div class="clue-detail">${escapeHtml(clue.text)}</div>
+      <div class="clue-label-row" data-detail="${detailId}">
+        <span class="clue-label">${escapeHtml(clue.label)}${clue.isKey ? '<span class="clue-key-mark">★</span>' : ""}</span>
+        <span class="clue-chevron">▾</span>
+      </div>
+      <div class="clue-detail collapsed" id="${detailId}">${escapeHtml(clue.text)}</div>
     </div>`;
+  item.querySelector(".clue-label-row").addEventListener("click", () => {
+    const detail = item.querySelector(".clue-detail");
+    const chevron = item.querySelector(".clue-chevron");
+    const isCollapsed = detail.classList.toggle("collapsed");
+    chevron.style.transform = isCollapsed ? "" : "rotate(180deg)";
+  });
   $("clues-list").appendChild(item);
 }
 
@@ -664,10 +674,10 @@ function showEnding(data) {
     ${scoreRow("手法推理", sc.method, 20)}
     ${scoreRow("調查效率（剩餘 AP）", sc.ap, 10)}
     ${scoreRow("線索完整度", sc.clue, 10)}
-    ${scoreRow("互動深度（NPC / 隱藏事件）", sc.interaction, 20)}
+    ${scoreRow("互動深度（NPC 崩潰）", sc.interaction, 15)}
     <div class="score-row total">
       <span class="score-label">總分</span>
-      <span class="score-val max">${sc.total} / 120</span>
+      <span class="score-val max">${sc.total} / 115</span>
     </div>`;
 
   // 結局故事
@@ -704,77 +714,26 @@ function showEnding(data) {
       ${lit.reflectionQuestion ? `<p class="literary-question">💭 ${escapeHtml(lit.reflectionQuestion)}</p>` : ""}`;
   }
 
-  // ── 未發現的線索與隱藏劇情 ──
+  // ── 未發現的線索（只列線索，不含隱藏事件）──
   const foundLabels = new Set((gameState.cluesFound || []).map((c) => c.label));
   const missedClues = (game.clues || []).filter((c) => !foundLabels.has(c.label));
-  const missedHidden = !gameState.hiddenEventTriggered && game.hiddenEvent;
 
-  if (missedClues.length > 0 || missedHidden) {
+  if (missedClues.length > 0) {
     $("missed-section").classList.remove("hidden");
     const TYPE_TAG = { physical: "物證", testimony: "人證", environmental: "環境", misleading: "誤導" };
-    let html = "";
-    if (missedClues.length > 0) {
-      html += `<div class="missed-group"><div class="missed-group-title">未發現的線索</div>`;
-      html += missedClues.map((c) => `
-        <div class="missed-clue${c.isKey ? " key-clue" : ""}">
-          <span class="clue-type-tag">${TYPE_TAG[c.type] || c.type}</span>
-          ${c.isKey ? '<span class="key-tag">★ 關鍵</span>' : ""}
-          <span class="clue-label">${escapeHtml(c.label)}</span>
-          <p class="clue-text">${escapeHtml(c.text)}</p>
-        </div>`).join("");
-      html += `</div>`;
-    }
-    if (missedHidden) {
-      html += `<div class="missed-group">
-        <div class="missed-group-title">未觸發的隱藏事件</div>
-        <div class="missed-clue">
-          <p class="clue-text">${escapeHtml(game.hiddenEvent.description)}</p>
-          <p class="clue-text" style="margin-top:.3rem;font-style:italic">揭示：${escapeHtml(game.hiddenEvent.clueRevealed)}</p>
-        </div>
-      </div>`;
-    }
-    $("missed-content").innerHTML = html;
+    $("missed-content").innerHTML = missedClues.map((c) => `
+      <div class="missed-clue${c.isKey ? " key-clue" : ""}">
+        <span class="clue-type-tag">${TYPE_TAG[c.type] || c.type}</span>
+        ${c.isKey ? '<span class="key-tag">★ 關鍵</span>' : ""}
+        <span class="clue-label">${escapeHtml(c.label)}</span>
+        <p class="clue-text">${escapeHtml(c.text)}</p>
+      </div>`).join("");
   }
 
-  // ── 完整故事劇情下拉 ──
+  // ── 完整故事下拉（AI 生成小說）──
   $("full-story-section").classList.remove("hidden");
-  const TYPE_TAG2 = { physical: "物證", testimony: "人證", environmental: "環境", misleading: "誤導" };
-  const allClues = [...(game.clues || []), ...(game.misleadingClue ? [{ ...game.misleadingClue, type: "misleading", isKey: false }] : [])];
-  $("full-story-body").innerHTML = `
-    <div class="story-chapter">
-      <div class="story-chapter-title">開場</div>
-      <p>${escapeHtml(game.openingNarration || game.setting?.desc || "")}</p>
-    </div>
-    <div class="story-chapter">
-      <div class="story-chapter-title">所有線索</div>
-      ${allClues.map((c) => `
-        <div class="full-clue${c.isKey ? " key-clue" : ""}">
-          <span class="clue-type-tag">${TYPE_TAG2[c.type] || c.type}</span>
-          ${c.isKey ? '<span class="key-tag">★</span>' : ""}
-          <strong>${escapeHtml(c.label)}</strong>
-          <p class="clue-text">${escapeHtml(c.text)}</p>
-        </div>`).join("")}
-    </div>
-    <div class="story-chapter">
-      <div class="story-chapter-title">隱藏事件（第3回合）</div>
-      <p>${escapeHtml(game.hiddenEvent?.description || "")}</p>
-      <p style="font-style:italic;margin-top:.3rem">揭示：${escapeHtml(game.hiddenEvent?.clueRevealed || "")}</p>
-    </div>
-    <div class="story-chapter">
-      <div class="story-chapter-title">NPC 秘密</div>
-      ${(game.npcs || []).map((n) => `
-        <div class="full-npc-secret">
-          <strong>${escapeHtml(n.name)}</strong>（${escapeHtml(n.role)}）
-          <p>表層秘密：${escapeHtml(n.surfaceSecret || "")}</p>
-          <p>核心秘密：${escapeHtml(n.coreSecret || "")}</p>
-        </div>`).join("")}
-    </div>
-    <div class="story-chapter">
-      <div class="story-chapter-title">完整真相</div>
-      <p><strong>真兇：</strong>${escapeHtml(data.killerName)}（${escapeHtml(data.killerRole)}）</p>
-      <p><strong>動機：</strong>${escapeHtml(data.killerMotive)}</p>
-      <p><strong>手法：</strong>${escapeHtml(data.killerMethod)}</p>
-    </div>`;
+  const novelText = data.fullStory || "";
+  $("full-story-body").innerHTML = `<div class="novel-text">${escapeHtml(novelText).replace(/\n\n/g, "</p><p>").replace(/\n/g, "<br>")}</div>`;
 
   $("full-story-toggle").onclick = () => {
     const body = $("full-story-body");

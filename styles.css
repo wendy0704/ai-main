@@ -169,7 +169,7 @@ body {
 #screen-loading .card,
 #screen-accusation .card,
 #screen-ending .card {
-  max-width: 640px;
+  max-width: 1100px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -549,7 +549,20 @@ body {
 .clue-type-tag.misleading   { background: var(--gold);   color: #fff; }
 .clue-text-wrap { flex: 1; }
 .clue-label { font-weight: 600; color: var(--ink); font-family: var(--type); }
-.clue-detail { color: var(--muted); font-size: .82rem; margin-top: .1rem; font-family: var(--type); }
+.clue-label-row {
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer; user-select: none;
+}
+.clue-label-row:hover .clue-label { color: var(--stamp); }
+.clue-chevron { font-size: .65rem; color: var(--muted); transition: transform .2s; }
+.clue-detail {
+  color: var(--muted); font-size: .82rem;
+  margin-top: .35rem; font-family: var(--type);
+  line-height: 1.55;
+  max-height: 200px; overflow: hidden;
+  transition: max-height .25s ease, margin-top .25s ease;
+}
+.clue-detail.collapsed { max-height: 0; margin-top: 0; }
 .clue-key-mark { font-size: .68rem; color: var(--stamp); margin-left: .3rem; }
 
 /* ── 選項 ── */
@@ -820,6 +833,20 @@ body {
 
 /* ── 結局 ── */
 .ending-card { text-align: center; }
+/* ── 結局雙欄佈局 ── */
+.ending-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  text-align: left;
+}
+.ending-left, .ending-right { min-width: 0; }
+@media (max-width: 700px) {
+  .ending-grid { grid-template-columns: 1fr; }
+  #screen-ending .card { max-width: 100%; }
+}
+
 .ending-verdict {
   font-size: .75rem; letter-spacing: .18em;
   color: var(--stamp); margin-bottom: .5rem;
@@ -1295,3 +1322,16 @@ body.style-coldcase .btn-primary { background: var(--stamp); border-color: var(-
   transition: background .15s, color .15s;
 }
 .btn-secondary:hover { background: var(--stamp); color: var(--surface); }
+
+/* ── 完整故事小說文字 ── */
+.novel-text {
+  font-size: .88rem; color: var(--ink);
+  line-height: 1.9; font-family: var(--type);
+  text-align: justify;
+}
+.novel-text p { margin-bottom: .8rem; }
+.novel-text p:first-child::first-letter {
+  font-size: 2.2em; font-weight: 700;
+  float: left; line-height: 1; margin-right: .15em;
+  color: var(--stamp);
+}

@@ -213,38 +213,39 @@
     <!-- 結局 -->
     <section id="screen-ending" class="screen">
       <div class="card ending-card">
+        <!-- 頂部全寬 -->
         <p class="ending-verdict" id="ending-verdict"></p>
         <h2 class="ending-type-title" id="ending-title"></h2>
         <div class="detective-title-box" id="detective-title-box"></div>
 
-        <!-- 分數 -->
-        <div class="score-card" id="score-card"></div>
+        <!-- 雙欄主體 -->
+        <div class="ending-grid">
+          <!-- 左欄：評分 / 故事 / 真相 -->
+          <div class="ending-left">
+            <div class="score-card" id="score-card"></div>
+            <p id="ending-story" class="ending-story"></p>
+            <div id="truth-reveal" class="truth-reveal"></div>
+            <div id="literary-section" class="literary-section hidden">
+              <h4>📚 議題反思</h4>
+              <div id="literary-content"></div>
+            </div>
+          </div>
 
-        <!-- 結局故事 -->
-        <p id="ending-story" class="ending-story"></p>
+          <!-- 右欄：錯過的線索 / 完整故事下拉 -->
+          <div class="ending-right">
+            <div id="missed-section" class="missed-section hidden reveal-step">
+              <div class="missed-header">🔍 你錯過了這些</div>
+              <div id="missed-content"></div>
+            </div>
 
-        <!-- 真相揭曉 -->
-        <div id="truth-reveal" class="truth-reveal"></div>
-
-        <!-- 文學連結 -->
-        <div id="literary-section" class="literary-section hidden">
-          <h4>📚 議題反思</h4>
-          <div id="literary-content"></div>
-        </div>
-
-        <!-- 未發現的線索與隱藏劇情 -->
-        <div id="missed-section" class="missed-section hidden reveal-step">
-          <div class="missed-header">🔍 你錯過了這些</div>
-          <div id="missed-content"></div>
-        </div>
-
-        <!-- 完整故事劇情下拉 -->
-        <div id="full-story-section" class="full-story-section hidden reveal-step">
-          <button type="button" class="full-story-toggle" id="full-story-toggle">
-            <span>📖 完整故事劇情</span>
-            <span class="toggle-chevron" id="full-story-chevron">▾</span>
-          </button>
-          <div id="full-story-body" class="full-story-body collapsed"></div>
+            <div id="full-story-section" class="full-story-section hidden reveal-step">
+              <button type="button" class="full-story-toggle" id="full-story-toggle">
+                <span>📖 完整故事劇情</span>
+                <span class="toggle-chevron" id="full-story-chevron">▾</span>
+              </button>
+              <div id="full-story-body" class="full-story-body collapsed"></div>
+            </div>
+          </div>
         </div>
 
         <!-- 按鈕組 -->

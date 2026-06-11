@@ -278,15 +278,27 @@ app.post("/api/accuse", async (req, res) => {
   const foundKeyClues = (gameState.cluesFound || []).filter((c) => c.isKey).length;
   const clueScore = Math.round((Math.min(foundKeyClues, 3) / 3) * 10);
   const coreBreaks = gameState.coreSecretsFound || 0;
-  const interactionScore = Math.min(20, (gameState.hiddenEventTriggered ? 10 : 0) + coreBreaks * 5);
+  const interactionScore = Math.min(15, coreBreaks * 5); // 最多3個NPC崩潰，每個5分，上限15
   const isOvertime = gameState.apRemaining <= 0;
 
   try {
+    const cluesSummary = (script.clues || []).map((c) => `【${c.label}】${c.text}`).join("\n");
+    const npcSummary = (script.npcs || []).map((n) => `${n.name}（${n.role}）：表層秘密—${n.surfaceSecret}；核心秘密—${n.coreSecret}`).join("\n");
+
     const evalMsg = `評估玩家指控，以繁體中文回應。
 
-真相：兇手=${killer?.name}，動機：${script.killerTruth.motive}，手法：${script.killerTruth.method}
+【案件背景】
+場景：${script.setting?.name}
+被害者：${script.victim?.name}（${script.victim?.role}）
+兇手真相：${killer?.name}，動機：${script.killerTruth.motive}，手法：${script.killerTruth.method}
 
-玩家指控：
+【NPC】
+${npcSummary}
+
+【所有線索】
+${cluesSummary}
+
+【玩家指控】
 - 指認：${accused?.name}（${killerCorrect ? "✓正確" : "✗錯誤"}）
 - 動機說法：「${accusedMotive}」
 - 手法說法：「${accusedMethod}」
@@ -296,18 +308,25 @@ app.post("/api/accuse", async (req, res) => {
 - motiveScore：兇手答錯時固定給 0；兇手答對時依動機吻合程度給 0-20
 - methodScore：不論兇手對錯，只要玩家說出的手法與真實手法吻合就給分（0-20）
 
+fullStory 規則：
+- 以第三人稱小說風格，繁體中文，約500字
+- 從案發背景開始，帶出所有NPC關係、線索、真相
+- 結尾揭示兇手動機與手法，帶有文學感
+- 不提及「玩家」或「遊戲」
+
 返回 JSON（不含 markdown）：
 {
   "motiveScore": 0-20,
   "methodScore": 0-20,
   "motiveFeedback": "一句話點評動機答案",
   "methodFeedback": "一句話點評手法答案",
-  "endingNarration": "結局故事（80-120字，根據結果調整情緒基調）"
+  "endingNarration": "結局故事（80-120字，根據結果調整情緒基調）",
+  "fullStory": "約500字第三人稱小說"
 }`;
 
     const msg = await client.chat.completions.create({
       model: "gpt-4o",
-      max_tokens: 600,
+      max_tokens: 1800,
       messages: [{ role: "user", content: evalMsg }],
     });
 
@@ -322,7 +341,7 @@ app.post("/api/accuse", async (req, res) => {
     let endingType;
     if (isOvertime) endingType = "overtime";
     else if (!killerCorrect) endingType = "wrong";
-    else if (total >= 96) endingType = "perfect";  // 120分制，約80%
+    else if (total >= 92) endingType = "perfect";  // 115分制，約80%
     else endingType = "partial";
 
     const titleMap = [
