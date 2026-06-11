@@ -193,7 +193,7 @@ function renderNpcPanel() {
       </div>
       <div class="npc-pressure-wrap">
         <div class="pressure-bar-bg">
-          <div class="pressure-bar-fill" id="pressure-fill-${n.id}" style="width:0%"></div>
+          <div class="pressure-bar-fill" id="pressure-fill-${n.id}" style="width:0%;background:var(--stamp)"></div>
         </div>
         <span class="pressure-label" id="pressure-label-${n.id}">壓力 0/100</span>
       </div>
