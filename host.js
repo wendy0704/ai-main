@@ -704,6 +704,85 @@ function showEnding(data) {
       ${lit.reflectionQuestion ? `<p class="literary-question">💭 ${escapeHtml(lit.reflectionQuestion)}</p>` : ""}`;
   }
 
+  // ── 未發現的線索與隱藏劇情 ──
+  const foundLabels = new Set((gameState.cluesFound || []).map((c) => c.label));
+  const missedClues = (game.clues || []).filter((c) => !foundLabels.has(c.label));
+  const missedHidden = !gameState.hiddenEventTriggered && game.hiddenEvent;
+
+  if (missedClues.length > 0 || missedHidden) {
+    $("missed-section").classList.remove("hidden");
+    const TYPE_TAG = { physical: "物證", testimony: "人證", environmental: "環境", misleading: "誤導" };
+    let html = "";
+    if (missedClues.length > 0) {
+      html += `<div class="missed-group"><div class="missed-group-title">未發現的線索</div>`;
+      html += missedClues.map((c) => `
+        <div class="missed-clue${c.isKey ? " key-clue" : ""}">
+          <span class="clue-type-tag">${TYPE_TAG[c.type] || c.type}</span>
+          ${c.isKey ? '<span class="key-tag">★ 關鍵</span>' : ""}
+          <span class="clue-label">${escapeHtml(c.label)}</span>
+          <p class="clue-text">${escapeHtml(c.text)}</p>
+        </div>`).join("");
+      html += `</div>`;
+    }
+    if (missedHidden) {
+      html += `<div class="missed-group">
+        <div class="missed-group-title">未觸發的隱藏事件</div>
+        <div class="missed-clue">
+          <p class="clue-text">${escapeHtml(game.hiddenEvent.description)}</p>
+          <p class="clue-text" style="margin-top:.3rem;font-style:italic">揭示：${escapeHtml(game.hiddenEvent.clueRevealed)}</p>
+        </div>
+      </div>`;
+    }
+    $("missed-content").innerHTML = html;
+  }
+
+  // ── 完整故事劇情下拉 ──
+  $("full-story-section").classList.remove("hidden");
+  const TYPE_TAG2 = { physical: "物證", testimony: "人證", environmental: "環境", misleading: "誤導" };
+  const allClues = [...(game.clues || []), ...(game.misleadingClue ? [{ ...game.misleadingClue, type: "misleading", isKey: false }] : [])];
+  $("full-story-body").innerHTML = `
+    <div class="story-chapter">
+      <div class="story-chapter-title">開場</div>
+      <p>${escapeHtml(game.openingNarration || game.setting?.desc || "")}</p>
+    </div>
+    <div class="story-chapter">
+      <div class="story-chapter-title">所有線索</div>
+      ${allClues.map((c) => `
+        <div class="full-clue${c.isKey ? " key-clue" : ""}">
+          <span class="clue-type-tag">${TYPE_TAG2[c.type] || c.type}</span>
+          ${c.isKey ? '<span class="key-tag">★</span>' : ""}
+          <strong>${escapeHtml(c.label)}</strong>
+          <p class="clue-text">${escapeHtml(c.text)}</p>
+        </div>`).join("")}
+    </div>
+    <div class="story-chapter">
+      <div class="story-chapter-title">隱藏事件（第3回合）</div>
+      <p>${escapeHtml(game.hiddenEvent?.description || "")}</p>
+      <p style="font-style:italic;margin-top:.3rem">揭示：${escapeHtml(game.hiddenEvent?.clueRevealed || "")}</p>
+    </div>
+    <div class="story-chapter">
+      <div class="story-chapter-title">NPC 秘密</div>
+      ${(game.npcs || []).map((n) => `
+        <div class="full-npc-secret">
+          <strong>${escapeHtml(n.name)}</strong>（${escapeHtml(n.role)}）
+          <p>表層秘密：${escapeHtml(n.surfaceSecret || "")}</p>
+          <p>核心秘密：${escapeHtml(n.coreSecret || "")}</p>
+        </div>`).join("")}
+    </div>
+    <div class="story-chapter">
+      <div class="story-chapter-title">完整真相</div>
+      <p><strong>真兇：</strong>${escapeHtml(data.killerName)}（${escapeHtml(data.killerRole)}）</p>
+      <p><strong>動機：</strong>${escapeHtml(data.killerMotive)}</p>
+      <p><strong>手法：</strong>${escapeHtml(data.killerMethod)}</p>
+    </div>`;
+
+  $("full-story-toggle").onclick = () => {
+    const body = $("full-story-body");
+    const chevron = $("full-story-chevron");
+    const collapsed = body.classList.toggle("collapsed");
+    chevron.classList.toggle("rotated", !collapsed);
+  };
+
   // 分段淡入動畫
   const steps = [
     $("ending-verdict"),
@@ -713,6 +792,8 @@ function showEnding(data) {
     $("ending-story"),
     $("truth-reveal"),
     $("literary-section"),
+    $("missed-section"),
+    $("full-story-section"),
   ];
   steps.forEach((el) => { if (el) el.classList.add("reveal-step"); });
   steps.forEach((el, i) => {
@@ -803,8 +884,8 @@ function bindUi() {
   // 做出指控按鈕
   $("btn-show-accuse").addEventListener("click", showAccusationScreen);
 
-  // 再玩一局
-  $("btn-replay").addEventListener("click", () => {
+  // 新的一局：回主頁
+  $("btn-new-game").addEventListener("click", () => {
     game = null;
     gameState = null;
     document.body.className = "";
@@ -812,6 +893,36 @@ function bindUi() {
     document.querySelectorAll(".style-btn").forEach((b) => b.classList.remove("selected"));
     $("btn-confirm-setup").disabled = true;
     showScreen("screen-home");
+  });
+
+  // 再玩一次：同劇本重置重玩
+  $("btn-replay-same").addEventListener("click", () => {
+    if (!game) return;
+    gameState = {
+      playerName: gameState?.playerName || "",
+      apRemaining: 10,
+      apUsed: 0,
+      round: 1,
+      npcPressure: {},
+      npcTrust: {},
+      npcBroken: {},
+      cluesFound: [],
+      keyCluesFound: 0,
+      coreSecretsFound: 0,
+      hiddenEventTriggered: false,
+      conversationHistory: [],
+      phase: "investigation",
+    };
+    game.npcs.forEach((n) => {
+      gameState.npcPressure[n.id] = 0;
+      gameState.npcTrust[n.id] = 100;
+      gameState.npcBroken[n.id] = false;
+    });
+    // 重置結局區塊狀態
+    $("missed-section").classList.add("hidden");
+    $("full-story-section").classList.add("hidden");
+    $("full-story-body").classList.add("collapsed");
+    startGame();
   });
 }
 

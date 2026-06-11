@@ -1201,3 +1201,97 @@ body.style-coldcase .btn-primary { background: var(--stamp); border-color: var(-
   font-family: var(--type);
   letter-spacing: .08em;
 }
+
+/* ── 未發現線索區塊 ── */
+.missed-section {
+  margin-top: 1.2rem;
+  border: 1px dashed var(--stamp);
+  border-radius: 4px;
+  padding: 1rem 1.2rem;
+  background: rgba(0,0,0,.02);
+}
+.missed-header {
+  font-size: .8rem; font-weight: 700;
+  color: var(--stamp); letter-spacing: .08em;
+  font-family: var(--type); margin-bottom: .8rem;
+}
+.missed-group { margin-bottom: .8rem; }
+.missed-group-title {
+  font-size: .72rem; color: var(--muted);
+  font-family: var(--type); letter-spacing: .06em;
+  margin-bottom: .4rem; text-transform: uppercase;
+}
+.missed-clue {
+  padding: .5rem .7rem; margin-bottom: .4rem;
+  border-left: 2px solid var(--border2);
+  background: var(--surface);
+}
+.missed-clue.key-clue { border-left-color: var(--stamp); }
+.clue-type-tag {
+  font-size: .62rem; font-family: var(--type);
+  color: var(--mist); letter-spacing: .08em;
+  text-transform: uppercase; margin-right: .3rem;
+}
+.key-tag {
+  font-size: .65rem; color: var(--stamp);
+  margin-right: .3rem;
+}
+.clue-label { font-size: .8rem; font-weight: 600; color: var(--ink); }
+.clue-text { font-size: .78rem; color: var(--muted); margin-top: .2rem; line-height: 1.5; }
+
+/* ── 完整故事下拉 ── */
+.full-story-section { margin-top: 1.2rem; }
+.full-story-toggle {
+  width: 100%; display: flex; justify-content: space-between; align-items: center;
+  padding: .7rem 1rem; background: var(--surface);
+  border: 1px solid var(--border); cursor: pointer;
+  font-size: .82rem; font-family: var(--type);
+  font-weight: 600; color: var(--ink);
+  letter-spacing: .06em;
+}
+.full-story-toggle:hover { background: var(--surface2); }
+.full-story-body {
+  border: 1px solid var(--border); border-top: none;
+  padding: 1rem 1.2rem;
+  max-height: 600px; overflow-y: auto;
+  transition: max-height .3s ease, padding .3s ease;
+}
+.full-story-body.collapsed { max-height: 0; padding: 0 1.2rem; overflow: hidden; }
+.story-chapter { margin-bottom: 1.2rem; }
+.story-chapter:last-child { margin-bottom: 0; }
+.story-chapter-title {
+  font-size: .72rem; font-weight: 700;
+  font-family: var(--type); color: var(--stamp);
+  letter-spacing: .1em; text-transform: uppercase;
+  margin-bottom: .5rem; padding-bottom: .3rem;
+  border-bottom: 1px solid var(--border);
+}
+.story-chapter p { font-size: .8rem; color: var(--ink); line-height: 1.6; margin-bottom: .3rem; }
+.full-clue {
+  padding: .4rem .6rem; margin-bottom: .35rem;
+  border-left: 2px solid var(--border2);
+}
+.full-clue.key-clue { border-left-color: var(--stamp); }
+.full-clue strong { font-size: .8rem; color: var(--ink); }
+.full-npc-secret {
+  padding: .5rem .7rem; margin-bottom: .5rem;
+  border-left: 2px solid var(--border2);
+}
+.full-npc-secret strong { font-size: .82rem; color: var(--ink); }
+.full-npc-secret p { font-size: .78rem; color: var(--muted); margin-top: .2rem; line-height: 1.5; }
+
+/* ── 結局按鈕組 ── */
+.replay-btns {
+  display: flex; gap: .8rem; margin-top: 1.5rem;
+}
+.replay-btns .btn-primary,
+.replay-btns .btn-secondary { flex: 1; }
+.btn-secondary {
+  padding: .65rem 1.5rem;
+  border: 1.5px solid var(--stamp);
+  background: transparent; color: var(--stamp);
+  font-family: var(--type); font-size: .82rem;
+  letter-spacing: .1em; cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.btn-secondary:hover { background: var(--stamp); color: var(--surface); }

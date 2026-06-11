@@ -232,7 +232,26 @@
           <div id="literary-content"></div>
         </div>
 
-        <button type="button" class="btn-primary" id="btn-replay">再玩一局</button>
+        <!-- 未發現的線索與隱藏劇情 -->
+        <div id="missed-section" class="missed-section hidden reveal-step">
+          <div class="missed-header">🔍 你錯過了這些</div>
+          <div id="missed-content"></div>
+        </div>
+
+        <!-- 完整故事劇情下拉 -->
+        <div id="full-story-section" class="full-story-section hidden reveal-step">
+          <button type="button" class="full-story-toggle" id="full-story-toggle">
+            <span>📖 完整故事劇情</span>
+            <span class="toggle-chevron" id="full-story-chevron">▾</span>
+          </button>
+          <div id="full-story-body" class="full-story-body collapsed"></div>
+        </div>
+
+        <!-- 按鈕組 -->
+        <div class="replay-btns">
+          <button type="button" class="btn-secondary" id="btn-new-game">新的一局</button>
+          <button type="button" class="btn-primary" id="btn-replay-same">再玩一次</button>
+        </div>
       </div>
     </section>
 
