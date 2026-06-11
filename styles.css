@@ -918,108 +918,73 @@ body {
    ═══════════════════════════════════════════════════ */
 
 /* ── 薄荷綠：鑑識實驗室，冷靜克制 ── */
+/* ── 薄荷綠：同預設紙感，印章換深綠 ── */
 body.style-forensic {
-  --bg:      #ddeae2;
-  --page:    #eaf5ee;
-  --surface: #f3faf5;
-  --surface2:#f9fefc;
-  --border:  #88b898;
-  --border2: #6a9878;
-  --text:    #081410;
-  --muted:   #386848;
+  --bg:      #f0f4f0;
+  --page:    #f5f7f4;
+  --surface: #fafbf9;
+  --surface2:#fdfdf9;
+  --border:  #b0c4b0;
+  --border2: #8aa48a;
+  --muted:   #4a6645;
   --stamp:   #1a6838;
-  --ink:     #050e08;
-  --green:   #1a5030;
-  --mist:    #3a6848;
-  --gold:    #287840;
+  --ink:     #0a150a;
+  --gold:    #2a7040;
 }
 body.style-forensic .fog {
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(30,120,70,.10), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(20,90,50,.07), transparent);
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(26,104,56,.08), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(26,104,56,.05), transparent);
 }
-body.style-forensic .card {
-  box-shadow: 3px 3px 0 #88b898;
-}
-body.style-forensic .hero-card::after {
-  content: "EVIDENCE";
-  color: var(--stamp);
-  border-color: var(--stamp);
-}
+body.style-forensic .card { box-shadow: 3px 3px 0 #b0c4b0; }
+body.style-forensic .hero-card::after { content: "EVIDENCE"; color: var(--stamp); border-color: var(--stamp); }
 body.style-forensic .round-badge { background: var(--stamp); }
 
-/* ── 琥珀黃：現場封鎖線，緊張現場感 ── */
+/* ── 琥珀黃：同預設紙感，印章換琥珀 ── */
 body.style-crimescene {
-  --bg:      #ede4c0;
-  --page:    #f8f0d4;
-  --surface: #fdf8e8;
-  --surface2:#fffcf2;
-  --border:  #c8a030;
-  --border2: #a87820;
-  --text:    #160c00;
-  --muted:   #685018;
+  --bg:      #f4f1e8;
+  --page:    #f8f5eb;
+  --surface: #fdfaf2;
+  --surface2:#fffdf6;
+  --border:  #c8b888;
+  --border2: #a89060;
+  --muted:   #6a5020;
   --stamp:   #c07800;
-  --ink:     #100800;
-  --green:   #3a5a18;
-  --mist:    #706030;
+  --ink:     #1a1000;
   --gold:    #a86800;
 }
 body.style-crimescene .fog {
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(200,130,10,.13), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(180,90,0,.09), transparent);
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(192,120,0,.09), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(192,120,0,.06), transparent);
 }
-body.style-crimescene .card {
-  box-shadow: 3px 3px 0 #c8a030;
-}
-body.style-crimescene .hero-card::after {
-  content: "DO NOT CROSS";
-  color: var(--stamp);
-  border-color: var(--stamp);
-}
-body.style-crimescene .round-badge {
-  background: var(--stamp);
-  color: #fff8e0;
-}
-body.style-crimescene .btn-primary {
-  background: var(--stamp);
-  border-color: var(--stamp);
-}
+body.style-crimescene .card { box-shadow: 3px 3px 0 #c8b888; }
+body.style-crimescene .hero-card::after { content: "DO NOT CROSS"; color: var(--stamp); border-color: var(--stamp); }
+body.style-crimescene .round-badge { background: var(--stamp); }
+body.style-crimescene .btn-primary { background: var(--stamp); border-color: var(--stamp); }
 
-/* ── 鋼鐵藍：冷案封存，塵封記憶感 ── */
+/* ── 鋼鐵藍：同預設紙感，印章換深藍 ── */
 body.style-coldcase {
-  --bg:      #cfd8e4;
-  --page:    #dce6f0;
-  --surface: #e6f0f8;
-  --surface2:#eef6fc;
-  --border:  #7890a8;
-  --border2: #587080;
-  --text:    #040a16;
-  --muted:   #304860;
+  --bg:      #eff2f5;
+  --page:    #f3f6f9;
+  --surface: #f8fafb;
+  --surface2:#fbfdfe;
+  --border:  #a8b8c8;
+  --border2: #8898a8;
+  --muted:   #3a5068;
   --stamp:   #163460;
-  --ink:     #020610;
-  --green:   #1a3848;
-  --mist:    #284868;
-  --gold:    #163068;
+  --ink:     #06101e;
+  --gold:    #163468;
 }
 body.style-coldcase .fog {
   background:
-    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(20,60,140,.10), transparent),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(10,40,100,.08), transparent);
+    radial-gradient(ellipse 80% 50% at 50% 0%, rgba(22,52,96,.09), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(22,52,96,.06), transparent);
 }
-body.style-coldcase .card {
-  box-shadow: 3px 3px 0 #7890a8;
-}
-body.style-coldcase .hero-card::after {
-  content: "COLD CASE";
-  color: var(--stamp);
-  border-color: var(--stamp);
-}
+body.style-coldcase .card { box-shadow: 3px 3px 0 #a8b8c8; }
+body.style-coldcase .hero-card::after { content: "COLD CASE"; color: var(--stamp); border-color: var(--stamp); }
 body.style-coldcase .round-badge { background: var(--stamp); }
-body.style-coldcase .btn-primary {
-  background: var(--stamp);
-  border-color: var(--stamp);
-}
+body.style-coldcase .btn-primary { background: var(--stamp); border-color: var(--stamp); }
 
 /* ── 打字機游標 ── */
 @keyframes twBlink {
@@ -1074,9 +1039,7 @@ body.style-coldcase .btn-primary {
 .choice-btn .choice-ap  { font-size: .7rem; color: var(--muted); white-space: nowrap; text-align: right; }
 
 /* ── NPC 壓力條色碼 ── */
-.npc-row[data-idx="0"] .pressure-bar-fill { background: var(--stamp); }
-.npc-row[data-idx="1"] .pressure-bar-fill { background: var(--green); }
-.npc-row[data-idx="2"] .pressure-bar-fill { background: var(--mist); }
+.npc-row .pressure-bar-fill { background: var(--stamp); }
 
 /* ── 結局分段淡入 ── */
 @keyframes revealFade {
