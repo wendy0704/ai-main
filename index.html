@@ -106,15 +106,15 @@
           <!-- 主持人 -->
           <div class="host-bubble card">
             <div class="host-avatar">
-              <svg viewBox="0 0 36 36" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <!-- 眼白/外框橢圓 -->
-                <ellipse cx="18" cy="17" rx="13" ry="8" stroke="currentColor" stroke-width="1.8"/>
-                <!-- 瞳孔 -->
-                <circle cx="18" cy="17" r="3.5" fill="currentColor"/>
-                <!-- 高光 -->
-                <circle cx="16.5" cy="15.5" r="1" fill="var(--page)" opacity=".55"/>
-                <!-- 放大鏡柄 -->
-                <line x1="28" y1="23" x2="33" y2="30" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+              <svg viewBox="0 0 32 32" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <!-- 帽頂 (y=7.5 ~ y=19.5, 高12) -->
+                <rect x="10" y="7.5" width="12" height="12" rx="1" fill="currentColor"/>
+                <!-- 帽帶 -->
+                <rect x="10" y="17" width="12" height="2" fill="none" stroke="var(--surface,#f5f0e8)" stroke-width="1.2"/>
+                <!-- 帽沿 (y=19.5 ~ y=24, 高4.5) -->
+                <rect x="5" y="19.5" width="22" height="4.5" rx="1" fill="currentColor"/>
+                <!-- 問號，在帽頂上半中心 -->
+                <text x="16" y="15.8" text-anchor="middle" font-size="7.5" font-weight="700" fill="var(--surface,#f5f0e8)" font-family="serif">?</text>
               </svg>
             </div>
             <div class="host-content">
