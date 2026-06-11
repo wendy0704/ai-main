@@ -551,7 +551,6 @@ function bindFreeInput() {
   }
 
   btn.addEventListener("click", submit);
-  input.addEventListener("keydown", (e) => { if (e.key === "Enter") submit(); });
 }
 
 // ── 指認畫面 ──────────────────────────────────────────────────────────────
