@@ -539,7 +539,7 @@ function bindFreeInput() {
   const btn = $("btn-free-action");
   let triggeredByButton = false;
 
-  input.addEventListener("keydown", (e) => { e.stopPropagation(); });
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); e.stopPropagation(); } });
 
   btn.addEventListener("mousedown", () => { triggeredByButton = true; });
   btn.addEventListener("click", () => {
