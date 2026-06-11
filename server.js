@@ -225,7 +225,7 @@ JSON 格式：
   "triggerHiddenEvent": false,
   "hiddenEventClue": null 或 { "label": "...", "text": "..." },
   "options": [
-    { "label": "行動標籤", "text": "選項描述", "actionType": "investigate|interrogate|pressure|wait", "target": "npcId或房間名", "apCost": 數字 }
+    { "label": "行動標籤", "text": "選項描述（必須使用 NPC 的真實姓名，禁止用「他」「她」「對方」「NPC」等代稱，例如「向林美秀追問昨晚的行蹤」而非「向她追問昨晚的行蹤」）", "actionType": "investigate|interrogate|pressure|wait", "target": "npcId或房間名", "apCost": 數字 }
   ],
   "isOffRail": false,
   "systemNote": null
