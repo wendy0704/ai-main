@@ -105,7 +105,18 @@
 
           <!-- 主持人 -->
           <div class="host-bubble card">
-            <div class="host-avatar">GM</div>
+            <div class="host-avatar">
+              <svg viewBox="0 0 36 36" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <!-- 眼白/外框橢圓 -->
+                <ellipse cx="18" cy="17" rx="13" ry="8" stroke="currentColor" stroke-width="1.8"/>
+                <!-- 瞳孔 -->
+                <circle cx="18" cy="17" r="3.5" fill="currentColor"/>
+                <!-- 高光 -->
+                <circle cx="16.5" cy="15.5" r="1" fill="var(--page)" opacity=".55"/>
+                <!-- 放大鏡柄 -->
+                <line x1="28" y1="23" x2="33" y2="30" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+              </svg>
+            </div>
             <div class="host-content">
               <span class="host-label">主持人</span>
               <p id="host-text"></p>
