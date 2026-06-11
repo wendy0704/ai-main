@@ -1,39 +1,87 @@
-# 迷局 — AI 劇本殺主持人　架構說明
+# 迷局 — AI 劇本殺主持人
 
 > 2026 年 6 月　期末專題版本
 
-本文件說明「迷局」全端架構，涵蓋後端 API、前端邏輯、AI Prompt 設計、資料結構及遊戲機制。
+迷局是一款 AI 驅動的單人謀殺推理遊戲（劇本殺）。玩家扮演偵探，在有限的行動力（AP）內蒐集線索、審問嫌疑人，最終指認兇手並說明動機與手法。每局劇本由 Claude Sonnet 即時生成，場景、角色、兇案細節皆不重複。
 
 ---
 
-## 1. 專案概述
+## 快速開始
 
-迷局是一款 AI 驅動的單人謀殺推理遊戲（劇本殺）。玩家扮演偵探，在有限的行動力（AP）內蒐集線索、審問嫌疑人，最終指認兇手並說明動機與手法。每局劇本由 Claude Sonnet 即時生成，場景、角色、兇案細節皆不重複。
+### 需求
+
+- [Node.js](https://nodejs.org/) v18 以上
+- [Anthropic API Key](https://console.anthropic.com/)（需要 claude-sonnet-4-6 的存取權限）
+
+### 安裝與啟動
+
+```bash
+# 1. Clone 專案
+git clone https://github.com/wendy0704/ai-main.git
+cd ai-main
+
+# 2. 安裝相依套件
+npm install
+
+# 3. 建立 .env 檔案並填入 API 金鑰
+echo "ANTHROPIC_API_KEY=你的金鑰" > .env
+
+# 4. 啟動伺服器
+node server.js
+```
+
+啟動後開啟瀏覽器前往 [http://localhost:3000](http://localhost:3000) 即可開始遊戲。
+
+### 對外分享（ngrok）
+
+如果想讓其他人也能玩，可用 ngrok 建立公開網址：
+
+```bash
+# 安裝 ngrok（若尚未安裝）
+brew install ngrok  # macOS
+
+# 開啟通道
+ngrok http 3000
+```
+
+ngrok 會產生一組 `https://xxxx.ngrok-free.app` 網址，分享給對方即可。
+
+---
+
+## 遊戲玩法
+
+1. 輸入偵探名字，點「確認，生成劇本」
+2. 等待 AI 生成原創謀殺案（約 10-20 秒）
+3. 使用 **10 點行動力（AP）** 自由搜查、審問、施壓
+4. 蒐集足夠線索後點「做出最終指控」
+5. 指認兇手、填寫動機與手法，看看破案成績
+
+---
+
+## 專案概述
 
 | 項目 | 說明 |
 |------|------|
 | 技術棧 | Node.js + Express 後端、原生 HTML/CSS/JS 前端、Anthropic Claude API |
 | AI 模型 | claude-sonnet-4-6（劇本生成 / GM 行動 / 結局評分） |
 | 串流方式 | SSE（Server-Sent Events）實現打字機效果 |
-| 部署方式 | ngrok 反向代理，本地 port 3000 對外開放 |
 | 遊戲時長 | 單局約 10 分鐘，10 點 AP 限制 |
 
 ---
 
-## 2. 檔案結構
+## 檔案結構
 
 | 檔案 | 說明 |
 |------|------|
 | `server.js` | 後端主程式：Express API 路由、AI Prompt、評分邏輯 |
 | `host.js` | 前端遊戲控制器：狀態管理、SSE 接收、UI 渲染 |
-| `generator.js` | 前端載入動畫控制：進度條、文字輪播 |
+| `generator.js` | 劇本生成呼叫與驗證 |
 | `styles.css` | 全部 CSS：版面、配色主題、動畫 |
 | `index.html` | 單頁應用 HTML：所有畫面結構 |
-| `.env` | ANTHROPIC_API_KEY 環境變數（不上傳） |
 
 ---
 
-## 3. API 端點
+## API 端點
 
 ### POST `/api/generate`
 
@@ -61,7 +109,7 @@
 
 ---
 
-## 4. NPC 資料結構（每局 3 人）
+## NPC 資料結構（每局 3 人）
 
 | 欄位 | 說明 |
 |------|------|
@@ -80,7 +128,7 @@
 
 ---
 
-## 5. 劇本 JSON 其他欄位
+## 劇本 JSON 其他欄位
 
 | 欄位 | 說明 |
 |------|------|
@@ -100,7 +148,7 @@
 
 ---
 
-## 6. 前端 gameState
+## 前端 gameState
 
 | 欄位 | 說明 |
 |------|------|
@@ -117,7 +165,7 @@
 
 ---
 
-## 7. 嫌疑人檔案（卷宗設計）
+## 嫌疑人檔案（卷宗設計）
 
 嫌疑人檔案顯示角色背景資訊，目的是讓玩家在整局遊戲中隨時查閱角色身份，搭配左欄的線索筆記本做推理。
 
@@ -134,44 +182,17 @@
 
 ---
 
-## 8. SSE 串流機制
-
-玩家執行行動後，後端立即以 SSE 串流回傳，前端在等待期間顯示跳動小點，收到完整 JSON 後才更新 UI。
+## SSE 串流機制
 
 | 端 | 說明 |
 |----|------|
 | 後端 | 設定 `Content-Type: text/event-stream`，逐字傳送 `{ t:"c", v:"片段" }`，最後傳 `{ t:"done", data }` |
-| 前端 | 呼叫後立即 `showThinkingDots()`，用 ReadableStream 接收，累積到 done 才呼叫 `applyActionData()` |
+| 前端 | 呼叫後立即顯示跳動小點，用 ReadableStream 接收，累積到 done 才更新 UI |
 | 好處 | 使用者立即看到回應中（跳動點），完整回應後再一次性更新所有 UI |
 
 ---
 
-## 9. GM Prompt 行動回傳 JSON 格式
-
-| 欄位 | 說明 |
-|------|------|
-| `narration` | 場景描述（100-150字） |
-| `hostNote` | 主持人旁白（20-40字） |
-| `clueFound` | null 或 `{ type, label, text, isKey, npcId }`，type：physical/testimony/environmental/misleading |
-| `pressureChanges` | `{ npcId: delta }`，壓力變動 |
-| `trustChanges` | `{ npcId: delta }`，信任變動 |
-| `npcBreakdown` | null 或 `{ npcId, secretType, revelation }`，觸發崩潰 |
-| `apCost` | 實際消耗 AP |
-| `triggerHiddenEvent` | 第3回合設 true |
-| `hiddenEventClue` | 隱藏事件附帶線索 |
-| `options` | 2-3 個下一步選項 `{ label, text, actionType, target, apCost }` |
-| `isOffRail` | 嚴重脫軌時為 true，退還 AP |
-| `systemNote` | 給玩家的系統提示 |
-
-**npcId 歸屬規則：**
-
-- ✓ 可填：線索上有該 NPC 的姓名、個人物品、筆跡、指紋，或明確描述「某人的○○」
-- ✗ 不填：僅因 NPC 與場所有關聯；不明確描述一律填 null
-- 前端補充：target 為 NPC id 時，physical/testimony/environmental 自動歸屬；target 為場所時不自動歸屬
-
----
-
-## 10. 社會議題系統
+## 社會議題系統
 
 每局劇本包含一個社會議題（職場剝削、家庭暴力、階級壓迫等），融入角色動機與背景設定，在結局集中呈現。
 
@@ -179,12 +200,12 @@
 |------|------|
 | 生成階段 | socialIssue.theme / context / killerBackground 由 Claude 生成 |
 | 遊戲中 | 議題自然融入 NPC 對話，三名 NPC 各持不同立場（sympathize/condemn/silent） |
-| 結局 | 真相揭曉後顯示「本案議題」區塊，literaryConnection 提供反思問題與相關作品 |
+| 結局 | 真相揭曉後顯示「本案議題」區塊，提供反思問題與相關作品 |
 | 設計原因 | 10 AP 不足以同時完成主線推理與議題探索，議題改在結局呈現衝擊感更強 |
 
 ---
 
-## 11. 配色主題系統
+## 配色主題系統
 
 主題選色器常駐於頁首右上角，支援 localStorage 持久化，遊戲途中可隨時切換。
 
@@ -198,7 +219,7 @@
 
 ---
 
-## 12. 評分系統（滿分 120）
+## 評分系統（滿分 120）
 
 | 項目 | 分數 |
 |------|------|
@@ -219,7 +240,7 @@
 
 ---
 
-## 13. 前端畫面流程
+## 前端畫面流程
 
 | 畫面 | 說明 |
 |------|------|
@@ -232,9 +253,7 @@
 
 ---
 
-## 14. 版面配置（screen-game）
-
-遊戲主畫面採 CSS Grid 雙欄，左欄為主要敘事與互動區，右欄為狀態面板。
+## 版面配置（screen-game）
 
 | 區塊 | 內容 |
 |------|------|
@@ -243,21 +262,6 @@
 | 嫌疑人狀態面板 | 每個 NPC 顯示壓力條（0-100）與崩潰標籤 |
 | 嫌疑人檔案 | 可收合卷宗，顯示背景 → 漸進解鎖秘密 |
 | 線索筆記本 | 可收合，依時序列出所有已發現線索，含類型標籤與 ★ 標記 |
-
----
-
-## 環境設定
-
-```bash
-# 安裝相依套件
-npm install
-
-# 建立 .env 並填入 API 金鑰
-echo "ANTHROPIC_API_KEY=你的金鑰" > .env
-
-# 啟動伺服器
-node server.js
-```
 
 ---
 
