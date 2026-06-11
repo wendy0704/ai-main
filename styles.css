@@ -250,6 +250,12 @@ body {
   opacity: .4; cursor: not-allowed;
   transform: none; box-shadow: 3px 3px 0 var(--border2);
 }
+.btn-primary.confirming {
+  background: var(--page);
+  color: var(--stamp);
+  border: 2px solid var(--stamp);
+  box-shadow: 3px 3px 0 var(--stamp);
+}
 
 /* ── 設定畫面 ── */
 .setup-card h2 {
@@ -421,14 +427,12 @@ body {
 }
 .host-avatar {
   flex-shrink: 0;
-  width: 2.4rem; height: 2.4rem;
-  border-radius: 0;
-  background: var(--ink);
+  width: 2.8rem; height: 2.8rem;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--stamp);
   display: flex; align-items: center; justify-content: center;
-  font-size: .65rem; font-weight: 700;
-  color: var(--page);
-  font-family: var(--type);
-  letter-spacing: .06em;
+  color: var(--stamp);
 }
 .host-label {
   display: block;
