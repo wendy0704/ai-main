@@ -1197,6 +1197,16 @@ body.style-coldcase .btn-primary { background: var(--stamp); border-color: var(-
   color: var(--ink);
   margin-bottom: .4rem;
 }
+.issue-definition {
+  font-size: .82rem;
+  color: var(--muted);
+  line-height: 1.65;
+  margin: 0 0 .5rem;
+  padding: .4rem .6rem;
+  background: rgba(0,0,0,.03);
+  border-left: 2px solid var(--stamp);
+  border-radius: 2px;
+}
 .social-issue-reveal p {
   font-size: .85rem;
   color: var(--text);

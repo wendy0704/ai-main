@@ -706,6 +706,7 @@ function showEnding(data) {
     ${issue ? `<div class="social-issue-reveal">
       <span class="issue-label">本案議題</span>
       <strong>${escapeHtml(issue.theme)}</strong>
+      ${issue.definition ? `<p class="issue-definition">${escapeHtml(issue.definition)}</p>` : ""}
       <p>${escapeHtml(issue.context)}</p>
       <p style="color:var(--muted);font-size:.85rem">${escapeHtml(issue.killerBackground)}</p>
     </div>` : ""}`;
