@@ -1241,7 +1241,7 @@ body.style-coldcase .btn-primary { background: var(--stamp); border-color: var(-
 
 /* ── 未發現線索區塊 ── */
 .missed-section {
-  margin-top: 1.2rem;
+  margin-top: 0;
   border: 1px dashed var(--stamp);
   border-radius: 4px;
   padding: 1rem 1.2rem;
