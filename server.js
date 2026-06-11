@@ -38,11 +38,11 @@ JSON 結構（完整填寫所有欄位）：
       "role": "身份（4-8字）",
       "personality": "性格特質（3-5字）",
       "background": "角色背景故事（15-25字，說明此人來歷與處境）",
-      "victimRelationship": "與被害者的關係（8-15字）",
+      "victimRelationship": "與被害者的客觀身份關係（8-15字，只描述社會角色連結，例如：前同事、房東與房客、多年老友；禁止包含衝突、過節、情感糾葛等戲劇性內容）",
       "isKiller": false,
       "issueStance": "sympathize",
-      "surfaceSecret": "表層秘密，容易問出（10-20字）",
-      "coreSecret": "核心秘密，施壓才能逼出（10-20字）",
+      "surfaceSecret": "表層秘密，施壓後可問出（10-20字）；適合放與被害者的衝突、過節、或見不得人的往來",
+      "coreSecret": "核心秘密，高壓才能逼出（10-20字）；兇手的 coreSecret 含作案動機或關鍵事實",
       "pressureThreshold": 60,
       "relationships": [
         { "targetId": "n1", "desc": "與n1的關係（5-10字）" }
