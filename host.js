@@ -537,8 +537,14 @@ function setUiLocked(locked) {
 function bindFreeInput() {
   const input = $("free-input");
   const btn = $("btn-free-action");
+  let triggeredByButton = false;
 
-  function submit() {
+  input.addEventListener("keydown", (e) => { e.stopPropagation(); });
+
+  btn.addEventListener("mousedown", () => { triggeredByButton = true; });
+  btn.addEventListener("click", () => {
+    if (!triggeredByButton) return;
+    triggeredByButton = false;
     const text = input.value.trim();
     if (!text) return;
     if (gameState.apRemaining < 1) {
@@ -548,10 +554,7 @@ function bindFreeInput() {
     }
     input.value = "";
     executeAction({ text, actionType: "free", target: null, apCost: 1 });
-  }
-
-  // 已移除 Enter 自動送出，僅限點按鈕執行
-  btn.addEventListener("click", submit);
+  });
 }
 
 // ── 指認畫面 ──────────────────────────────────────────────────────────────
