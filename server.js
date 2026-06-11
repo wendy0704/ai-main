@@ -289,6 +289,10 @@ app.post("/api/accuse", async (req, res) => {
 - 手法說法：「${accusedMethod}」
 - 剩餘 AP：${gameState.apRemaining}（超時=${isOvertime}）
 
+評分規則：
+- motiveScore：兇手答錯時固定給 0；兇手答對時依動機吻合程度給 0-20
+- methodScore：不論兇手對錯，只要玩家說出的手法與真實手法吻合就給分（0-20）
+
 返回 JSON（不含 markdown）：
 {
   "motiveScore": 0-20,
@@ -309,7 +313,7 @@ app.post("/api/accuse", async (req, res) => {
 
     const killerScore = killerCorrect ? 40 : 0;
     const motiveScore = killerCorrect ? (evalData.motiveScore || 0) : 0;
-    const methodScore = killerCorrect ? (evalData.methodScore || 0) : 0;
+    const methodScore = evalData.methodScore || 0; // 手法獨立計分，即使兇手答錯仍可得分
     const total = killerScore + motiveScore + methodScore + apScore + clueScore + interactionScore;
 
     let endingType;
