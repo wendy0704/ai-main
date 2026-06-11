@@ -277,8 +277,6 @@ app.post("/api/accuse", async (req, res) => {
   // 用 isKey 旗標計分（AI 回傳的 clueFound 不帶預設 id，無法比對 keyClueIds）
   const foundKeyClues = (gameState.cluesFound || []).filter((c) => c.isKey).length;
   const clueScore = Math.round((Math.min(foundKeyClues, 3) / 3) * 10);
-  const coreBreaks = gameState.coreSecretsFound || 0;
-  const interactionScore = Math.min(15, coreBreaks * 5); // 最多3個NPC崩潰，每個5分，上限15
   const isOvertime = gameState.apRemaining <= 0;
 
   try {
@@ -336,19 +334,19 @@ fullStory 規則：
     const killerScore = killerCorrect ? 40 : 0;
     const motiveScore = killerCorrect ? (evalData.motiveScore || 0) : 0;
     const methodScore = evalData.methodScore || 0; // 手法獨立計分，即使兇手答錯仍可得分
-    const total = killerScore + motiveScore + methodScore + apScore + clueScore + interactionScore;
+    const total = killerScore + motiveScore + methodScore + apScore + clueScore;
 
     let endingType;
     if (isOvertime) endingType = "overtime";
     else if (!killerCorrect) endingType = "wrong";
-    else if (total >= 92) endingType = "perfect";  // 115分制，約80%
+    else if (total >= 80) endingType = "perfect";  // 100分制，約80%
     else endingType = "partial";
 
     const titleMap = [
-      [108, "神探"],
-      [84, "優秀偵探"],
-      [60, "運氣型偵探"],
-      [36, "差點抓到的傢伙"],
+      [92, "神探"],
+      [72, "優秀偵探"],
+      [52, "運氣型偵探"],
+      [32, "差點抓到的傢伙"],
       [0,  "被兇手耍了"],
     ];
     const detectiveTitle = titleMap.find(([t]) => total >= t)?.[1] || "被兇手耍了";
@@ -358,7 +356,7 @@ fullStory 規則：
       data: {
         ...evalData,
         killerCorrect,
-        scores: { killer: killerScore, motive: motiveScore, method: methodScore, ap: apScore, clue: clueScore, interaction: interactionScore, total },
+        scores: { killer: killerScore, motive: motiveScore, method: methodScore, ap: apScore, clue: clueScore, total },
         endingType,
         detectiveTitle,
         socialIssue: script.socialIssue,
