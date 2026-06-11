@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>迷局 · AI 劇本殺主持人</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" /></noscript>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="fog" aria-hidden="true"></div>
+  <div id="breakdown-flash" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 44 44" width="44" height="44" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+        <!-- 卷宗底頁 -->
+        <rect x="6" y="8" width="24" height="30" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/>
+        <!-- 折角 -->
+        <polyline points="22,8 30,8 30,16 22,16 22,8" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="22" y1="8" x2="30" y2="16" stroke="currentColor" stroke-width="1.5"/>
+        <!-- 文字橫線 -->
+        <line x1="11" y1="22" x2="25" y2="22" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="11" y1="26" x2="22" y2="26" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="11" y1="30" x2="19" y2="30" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <!-- 放大鏡 -->
+        <circle cx="32" cy="31" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/>
+        <line x1="37" y1="36" x2="41" y2="40" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <h1>迷局</h1>
+        <p>AI 劇本殺主持人</p>
+      </div>
+    </div>
+    <div class="theme-switcher" id="theme-switcher">
+      <button class="theme-swatch" data-theme=""           title="預設"></button>
+      <button class="theme-swatch" data-theme="forensic"   title="薄荷綠"></button>
+      <button class="theme-swatch" data-theme="crimescene" title="琥珀黃"></button>
+      <button class="theme-swatch" data-theme="coldcase"   title="鋼鐵藍"></button>
+      <button class="theme-swatch" data-theme="random"     title="隨機"></button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- 首頁 -->
+    <section id="screen-home" class="screen active">
+      <div class="card hero-card">
+        <h2>今夜，誰是真兇？</h2>
+        <p>AI 主持人即時生成原創謀殺案。蒐集線索、審問嫌疑人、在行動力耗盡前指認兇手。</p>
+        <ul class="feature-list">
+          <li>3 名 NPC 各有秘密，施壓可逼出核心證詞</li>
+          <li>10 點行動力，搜證、審問、心理施壓自由分配</li>
+          <li>指認兇手＋動機＋手法，三項全對才算完美破案</li>
+        </ul>
+        <button type="button" class="btn-primary" id="btn-go-setup">開始調查</button>
+      </div>
+    </section>
+
+    <!-- 偵探檔案設定 -->
+    <section id="screen-setup" class="screen">
+      <div class="card setup-card">
+        <h2>偵探檔案</h2>
+        <div class="form-group">
+          <label for="player-name">你的名字</label>
+          <input type="text" id="player-name" placeholder="輸入偵探名字…" maxlength="10" autocomplete="off" />
+        </div>
+        <button type="button" class="btn-primary" id="btn-confirm-setup" disabled>確認，生成劇本</button>
+      </div>
+    </section>
+
+    <!-- 生成中 -->
+    <section id="screen-loading" class="screen">
+      <div class="card loading-card">
+        <div class="pulse-ring"></div>
+        <h2>AI 主持人正在撰寫劇本…</h2>
+        <p id="loading-text">構思場景</p>
+        <div class="loading-bar"><div id="loading-fill"></div></div>
+      </div>
+    </section>
+
+    <!-- 遊戲主畫面 -->
+    <section id="screen-game" class="screen">
+
+      <!-- 狀態列（全寬） -->
+      <div class="game-status card">
+        <div class="status-left">
+          <span class="round-badge" id="round-badge">第 1 回合</span>
+          <h2 class="script-title" id="script-title"></h2>
+        </div>
+        <div class="ap-display">
+          <div class="ap-pips" id="ap-pips"></div>
+          <span class="ap-label">AP <span id="ap-count">10</span>/10</span>
+        </div>
+      </div>
+
+      <!-- 雙欄主體 -->
+      <div class="game-grid">
+
+        <!-- 左欄：故事＋互動 -->
+        <div class="game-left">
+
+          <!-- 主持人 -->
+          <div class="host-bubble card">
+            <div class="host-avatar">GM</div>
+            <div class="host-content">
+              <span class="host-label">主持人</span>
+              <p id="host-text"></p>
+            </div>
+          </div>
+
+          <!-- 故事 -->
+          <div class="story-card card">
+            <div id="story-text" class="story-text"></div>
+          </div>
+
+          <!-- 系統提示（脫軌時顯示） -->
+          <div id="system-note" class="system-note hidden"></div>
+
+          <!-- 線索筆記本（可收合） -->
+          <div id="clues-panel" class="clues-panel card hidden">
+            <h3 class="panel-toggle" id="clues-toggle">
+              線索筆記本 <span id="clue-count" class="badge">0</span>
+              <span class="toggle-chevron">▾</span>
+            </h3>
+            <div id="clues-body" class="panel-body">
+              <div id="clues-list" class="clues-list"></div>
+            </div>
+          </div>
+
+          <!-- 選項 -->
+          <div id="choices-panel" class="choices-panel"></div>
+
+          <!-- 自由輸入 -->
+          <div id="free-input-area" class="free-input-area hidden">
+            <input type="text" id="free-input" placeholder="自由行動…（例如：詢問李管家案發當晚去過書房沒有）" maxlength="80" />
+            <button type="button" id="btn-free-action" class="btn-free">執行 <span class="ap-cost-tag">1AP</span></button>
+          </div>
+
+          <!-- 指認按鈕 -->
+          <div id="accuse-bar" class="accuse-bar hidden">
+            <button type="button" id="btn-show-accuse" class="btn-accuse-trigger">⚖️ 做出最終指控</button>
+          </div>
+
+        </div><!-- /game-left -->
+
+        <!-- 右欄：狀態面板 -->
+        <div class="game-right">
+
+          <!-- NPC 壓力面板 -->
+          <div id="npc-panel" class="npc-panel card hidden">
+            <h3>嫌疑人狀態</h3>
+            <div id="npc-grid" class="npc-grid"></div>
+          </div>
+
+          <!-- 嫌疑人檔案（整體可收合；每個 NPC 各自收合由 JS 處理） -->
+          <div id="suspects-panel" class="suspects-panel card hidden">
+            <h3 class="panel-toggle" id="suspects-toggle">
+              嫌疑人檔案
+              <span class="toggle-chevron">▾</span>
+            </h3>
+            <div id="suspects-body" class="panel-body">
+              <div id="suspects-grid" class="suspects-grid"></div>
+            </div>
+          </div>
+
+        </div><!-- /game-right -->
+
+      </div><!-- /game-grid -->
+
+    </section>
+
+    <!-- 指認畫面 -->
+    <section id="screen-accusation" class="screen">
+      <div class="card accusation-card">
+        <h2>最終指控</h2>
+        <p class="accusation-intro" id="accusation-intro">綜合所有線索，你認為誰是殺害被害者的真兇？</p>
+
+        <div class="accuse-group">
+          <label>兇手是誰？</label>
+          <div id="accuse-killer-options" class="accuse-killer-options"></div>
+        </div>
+
+        <div class="accuse-group">
+          <label for="accuse-motive">殺人動機？</label>
+          <input type="text" id="accuse-motive" placeholder="用一句話說明你認為的動機…" maxlength="60" />
+        </div>
+
+        <div class="accuse-group">
+          <label for="accuse-method">作案手法？</label>
+          <input type="text" id="accuse-method" placeholder="用一句話說明你認為的手法…" maxlength="60" />
+        </div>
+
+        <button type="button" class="btn-primary btn-submit-accuse" id="btn-submit-accuse" disabled>提出指控</button>
+        <button type="button" class="btn-back" id="btn-back-to-game">← 再想想</button>
+      </div>
+    </section>
+
+    <!-- 結局 -->
+    <section id="screen-ending" class="screen">
+      <div class="card ending-card">
+        <p class="ending-verdict" id="ending-verdict"></p>
+        <h2 class="ending-type-title" id="ending-title"></h2>
+        <div class="detective-title-box" id="detective-title-box"></div>
+
+        <!-- 分數 -->
+        <div class="score-card" id="score-card"></div>
+
+        <!-- 結局故事 -->
+        <p id="ending-story" class="ending-story"></p>
+
+        <!-- 真相揭曉 -->
+        <div id="truth-reveal" class="truth-reveal"></div>
+
+        <!-- 文學連結 -->
+        <div id="literary-section" class="literary-section hidden">
+          <h4>📚 議題反思</h4>
+          <div id="literary-content"></div>
+        </div>
+
+        <button type="button" class="btn-primary" id="btn-replay">再玩一局</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>娛樂向推理遊戲 · 劇本由 AI 即時生成 · 單人模式約 10 分鐘</p>
+  </footer>
+
+  <script src="generator.js"></script>
+  <script src="host.js"></script>
+</body>
+</html>
