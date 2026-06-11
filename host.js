@@ -79,7 +79,12 @@ async function runLoading(playerName) {
   try {
     const seed = (Date.now() ^ (Math.random() * 1e9)) >>> 0;
     game = await generateScript(seed, playerName);
-    game.npcs = [...game.npcs].sort(() => Math.random() - 0.5);
+    const _npcs = [...game.npcs];
+    for (let i = _npcs.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [_npcs[i], _npcs[j]] = [_npcs[j], _npcs[i]];
+    }
+    game.npcs = _npcs;
 
     gameState = {
       playerName,
