@@ -427,12 +427,15 @@ function applyActionData(data, actionData, sysNote) {
 
     if (data.npcBreakdown) {
       const { npcId, secretType, revelation } = data.npcBreakdown;
-      if (!gameState.npcBroken[npcId]) {
+      const npc = game.npcs.find((n) => n.id === npcId);
+      const threshold = npc?.pressureThreshold ?? 60;
+      const currentPressure = gameState.npcPressure?.[npcId] ?? 0;
+      if (currentPressure >= threshold && !gameState.npcBroken[npcId]) {
         gameState.npcBroken[npcId] = true;
         if (secretType === "core") gameState.coreSecretsFound++;
+        triggerBreakdownFlash();
+        addClue({ type: "testimony", label: `${npc?.name || npcId}的供詞`, text: revelation, isKey: true, npcId });
       }
-      triggerBreakdownFlash();
-      addClue({ type: "testimony", label: `${game.npcs.find((n) => n.id === npcId)?.name || npcId}的供詞`, text: revelation, isKey: true, npcId });
     }
 
     if (data.clueFound) {
