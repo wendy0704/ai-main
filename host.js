@@ -537,19 +537,16 @@ function setUiLocked(locked) {
 function bindFreeInput() {
   const input = $("free-input");
   const btn = $("btn-free-action");
-  let triggeredByButton = false;
 
+  // 攔截 Enter 鍵，無論是否在輸入法組字中，一律不提交
   input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && !e.isComposing) {
+    if (e.key === "Enter") {
       e.preventDefault();
       e.stopImmediatePropagation();
     }
   });
 
-  btn.addEventListener("mousedown", () => { triggeredByButton = true; });
   btn.addEventListener("click", () => {
-    if (!triggeredByButton) return;
-    triggeredByButton = false;
     const text = input.value.trim();
     if (!text) return;
     if (gameState.apRemaining < 1) {
