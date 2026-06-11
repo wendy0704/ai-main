@@ -681,11 +681,11 @@ function showEnding(data) {
     ${scoreRow("兇手指認", sc.killer, 40)}
     ${scoreRow("動機分析", sc.motive, 20)}
     ${scoreRow("手法推理", sc.method, 20)}
-    ${scoreRow("調查效率（剩餘 AP）", sc.ap, 10)}
+    ${scoreRow("調查效率（剩餘 AP）", sc.ap, 15)}
     ${scoreRow("線索完整度", sc.clue, 10)}
     <div class="score-row total">
       <span class="score-label">總分</span>
-      <span class="score-val max">${sc.total} / 100</span>
+      <span class="score-val max">${sc.total} / 105</span>
     </div>`;
 
   // 結局故事

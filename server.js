@@ -274,7 +274,7 @@ app.post("/api/accuse", async (req, res) => {
   const accused = script.npcs.find((n) => n.id === accusedId);
   const killerCorrect = accusedId === script.killerTruth.killerId;
 
-  const apScore = Math.round((gameState.apRemaining / 15) * 10);
+  const apScore = Math.min(gameState.apRemaining, 15); // 直接等於剩餘 AP，上限 15
   // 用 isKey 旗標計分（AI 回傳的 clueFound 不帶預設 id，無法比對 keyClueIds）
   const foundKeyClues = (gameState.cluesFound || []).filter((c) => c.isKey).length;
   const clueScore = Math.round((Math.min(foundKeyClues, 3) / 3) * 10);
@@ -340,14 +340,14 @@ fullStory 規則：
     let endingType;
     if (isOvertime) endingType = "overtime";
     else if (!killerCorrect) endingType = "wrong";
-    else if (total >= 80) endingType = "perfect";  // 100分制，約80%
+    else if (total >= 84) endingType = "perfect";  // 105分制，約80%
     else endingType = "partial";
 
     const titleMap = [
-      [92, "神探"],
-      [72, "優秀偵探"],
-      [52, "運氣型偵探"],
-      [32, "差點抓到的傢伙"],
+      [95, "神探"],
+      [75, "優秀偵探"],
+      [55, "運氣型偵探"],
+      [35, "差點抓到的傢伙"],
       [0,  "被兇手耍了"],
     ];
     const detectiveTitle = titleMap.find(([t]) => total >= t)?.[1] || "被兇手耍了";
