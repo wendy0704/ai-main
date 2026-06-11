@@ -564,6 +564,15 @@ body {
 }
 .clue-detail.collapsed { max-height: 0; margin-top: 0; }
 .clue-key-mark { font-size: .68rem; color: var(--stamp); margin-left: .3rem; }
+.clue-summary { color: var(--muted); font-size: .82rem; margin-bottom: .5rem; font-family: var(--type); }
+.clue-narration {
+  font-size: .82rem; color: var(--ink);
+  line-height: 1.7; font-family: var(--type);
+  padding: .6rem .7rem;
+  background: var(--surface2);
+  border-left: 2px solid var(--border2);
+  white-space: pre-wrap;
+}
 
 /* ── 選項 ── */
 .choices-panel { display: flex; flex-direction: column; gap: .55rem; }

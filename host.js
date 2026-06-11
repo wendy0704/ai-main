@@ -307,6 +307,9 @@ function addClue(clue) {
   const item = document.createElement("div");
   item.className = "clue-item new-clue";
   const detailId = `clue-detail-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const narrationHtml = clue.narration
+    ? `<div class="clue-narration">${escapeHtml(clue.narration)}</div>`
+    : "";
   item.innerHTML = `
     <span class="clue-type-tag ${escapeHtml(clue.type || "")}">${escapeHtml(typeTag)}</span>
     <div class="clue-text-wrap">
@@ -314,7 +317,10 @@ function addClue(clue) {
         <span class="clue-label">${escapeHtml(clue.label)}${clue.isKey ? '<span class="clue-key-mark">★</span>' : ""}</span>
         <span class="clue-chevron">▾</span>
       </div>
-      <div class="clue-detail collapsed" id="${detailId}">${escapeHtml(clue.text)}</div>
+      <div class="clue-detail collapsed" id="${detailId}">
+        <div class="clue-summary">${escapeHtml(clue.text)}</div>
+        ${narrationHtml}
+      </div>
     </div>`;
   item.querySelector(".clue-label-row").addEventListener("click", () => {
     const detail = item.querySelector(".clue-detail");
@@ -437,6 +443,8 @@ function applyActionData(data, actionData, sysNote) {
       if (!clue.npcId && targetIsNpc && ["testimony", "physical", "environmental"].includes(clue.type)) {
         clue.npcId = actionData.target;
       }
+      // 把完整場景旁白一起存入線索
+      if (data.narration) clue.narration = data.narration;
       addClue(clue);
     }
 
