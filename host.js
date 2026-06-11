@@ -602,26 +602,12 @@ function showAccusationScreen() {
   $("accuse-motive").addEventListener("input", checkAccuseReady);
   $("accuse-method").addEventListener("input", checkAccuseReady);
 
-  let awaitingConfirm = false;
-
   submitBtn.onclick = async () => {
     if (!selectedKillerId) return;
     const motive = $("accuse-motive").value.trim();
     const method = $("accuse-method").value.trim();
     if (!motive || !method) return;
 
-    if (!awaitingConfirm) {
-      // 第一次按：進入確認狀態，讓玩家看清楚再決定
-      awaitingConfirm = true;
-      $("accuse-motive").disabled = true;
-      $("accuse-method").disabled = true;
-      document.querySelectorAll(".accuse-npc-btn").forEach((b) => b.disabled = true);
-      submitBtn.textContent = "確認送出（點一次可返回修改）";
-      submitBtn.classList.add("confirming");
-      return;
-    }
-
-    // 第二次按：真正送出
     submitBtn.disabled = true;
     submitBtn.textContent = "AI 評分中…";
     try {
@@ -637,22 +623,8 @@ function showAccusationScreen() {
       alert("評分失敗：" + err.message);
       submitBtn.disabled = false;
       submitBtn.textContent = "提出指控";
-      awaitingConfirm = false;
     }
   };
-
-  // 返回修改：解鎖欄位
-  $("btn-back-to-game").addEventListener("click", () => {
-    if (awaitingConfirm) {
-      awaitingConfirm = false;
-      $("accuse-motive").disabled = false;
-      $("accuse-method").disabled = false;
-      document.querySelectorAll(".accuse-npc-btn").forEach((b) => b.disabled = false);
-      submitBtn.textContent = "提出指控";
-      submitBtn.classList.remove("confirming");
-      checkAccuseReady();
-    }
-  }, { once: false });
 
   $("btn-back-to-game").onclick = () => {
     if (gameState.apRemaining > 0) {
