@@ -797,6 +797,13 @@ body {
 }
 .accuse-group input[type="text"]:focus { border-color: var(--ink); }
 .accuse-group input[type="text"]::placeholder { color: var(--muted); opacity: .5; }
+.accuse-group input[type="text"]:-webkit-autofill,
+.accuse-group input[type="text"]:-webkit-autofill:hover,
+.accuse-group input[type="text"]:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px var(--surface2) inset;
+  -webkit-text-fill-color: var(--ink);
+  border-color: var(--border2);
+}
 .btn-submit-accuse { margin-bottom: .6rem; }
 .btn-back {
   display: block; width: 100%; padding: .65rem;
